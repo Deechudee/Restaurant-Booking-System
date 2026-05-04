@@ -290,3 +290,69 @@ header.hero {
   color: var(--text) !important;
   border-color: var(--border) !important;
 }
+/* Home Page Styles */
+
+.home-container {
+  font-family: Arial, sans-serif;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: #ee8282;
+  color: white;
+}
+
+.nav-links a {
+  margin-left: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  background: #f4f4f4;
+}
+
+.btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+/* Sections */
+.section {
+  padding: 40px;
+  text-align: center;
+}
+
+/* Menu */
+.menu {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.menu-item {
+  padding: 15px;
+  background: #eee;
+  border-radius: 8px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 15px;
+  background: #222;
+  color: white;
+}
+.logo{
+  color: white;
+}

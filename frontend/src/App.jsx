@@ -1,37 +1,50 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import BookingForm from "./components/BookingForm";
+import "./App.css";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import MyBookings from "./pages/MyBookings";
+import { AuthContextProvider, useAuth } from "./context/AuthContext";
+
+import { SocketProvider } from "./context/SocketContext";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+
+
+
+const PrivateRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) return <p>Loading...</p>;
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+function AppContent() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} /> {/* placeholder, update later */}
+      <Route path="/booking" element={<PrivateRoute><BookingForm /></PrivateRoute> } />
+      <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+      <Route path="/my-bookings" element={<PrivateRoute><MyBookings /></PrivateRoute>} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
+  );
+}
 
 function App() {
-  const [bookings, setBookings] = useState([]);
-
-  const fetchBookings = () => {
-    axios
-      .get("http://localhost:5000/api/bookings")
-      .then((res) => setBookings(res.data))
-      .catch((err) => console.log(err));
-  };
-
-  useEffect(() => {
-    fetchBookings();
-  }, []);
-
   return (
-    <div>
-      <h1>Restaurant Booking</h1>
-
-      <BookingForm refresh={fetchBookings} />
-
-      <h2>Bookings</h2>
-      {bookings.map((b) => (
-        <div key={b._id}>
-          <p><b>Name:</b> {b.name}</p>
-          <p><b>Guests:</b> {b.guests}</p>
-          <p><b>Time:</b> {b.time}</p>
-          <hr />
-        </div>
-      ))}
-    </div>
+    <AuthContextProvider>
+      <SocketProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </SocketProvider>
+    </AuthContextProvider>
   );
 }
 

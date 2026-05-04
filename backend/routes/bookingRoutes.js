@@ -1,38 +1,15 @@
 const express = require("express");
-const Booking = require("../models/Booking");
+const { protect } = require("../middlewares/authMiddleware");
+const { createBooking, getBookings, getUserBookings, cancelBooking } = require("../controllers/bookingController");
+
 const router = express.Router();
 
-router.post("/book", async (req, res) => {
-    try {
-        const { name, guests, date, time, table } = req.body;
+// Public get all
+router.get('/bookings', getBookings);
 
-        // Check if table is already booked for the same date and time
-        const existing = await Booking.findOne({ date: new Date(date), time, table });
-        if (existing) {
-            return res.status(409).json({ message: `Table ${table} is already booked for this date and time.` });
-        }
-
-        const booking = new Booking({ name, guests, date: new Date(date), time, table });
-        const saved = await booking.save();
-        res.status(201).json(saved);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-router.get("/bookings", async (req, res) => {
-    try {
-        const { date } = req.query;
-        let query = {};
-        if (date) {
-            query.date = new Date(date);
-        }
-        const bookings = await Booking.find(query).sort({ createdAt: -1 });
-        res.status(200).json(bookings);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+// Protected
+router.post('/bookings', protect, createBooking);
+router.get('/my-bookings', protect, getUserBookings);
+router.patch('/bookings/:id/cancel', protect, cancelBooking);
 
 module.exports = router;
-
